@@ -14,7 +14,7 @@ cp -r wezterm ~/.config/.
 cp -r starship ~/.config/.
 cp -r joplin-desktop ~/.config/.
 
-cp iterm2/Preferences/. ~/Library/Preferences/.
-cp rectangle/Preferences/. ~/Library/Preferences/.
+cp -r iterm2/Preferences/. ~/Library/Preferences/.
+cp -r rectangle/Preferences/. ~/Library/Preferences/.
 
 
