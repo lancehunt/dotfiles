@@ -1,0 +1,160 @@
+# This config is best with the following fonts:
+#
+# Iosevka
+# Nerd Font Symbols Only
+# Noto Color Emoji
+#
+# Install on MacOS with:
+# brew install --cask font-iosevka
+# brew install --cask font-symbols-only-nerd-font
+# brew install --cask font-noto-color-emoji
+
+format = """
+$directory\
+$git_branch\
+$git_commit\
+$git_state\
+$git_metrics\
+$git_status\
+$docker_context\
+$package\
+$dotnet\
+$elixir\
+$erlang\
+$golang\
+$haskell\
+$java\
+$kotlin\
+$lua\
+$nodejs\
+$pulumi\
+$python\
+$rust\
+$scala\
+$terraform\
+$vagrant\
+$nix_shell\
+$container\
+$shell\
+$fill\
+(\\[$jobs\\])\
+(\\[$cmd_duration\\])\
+(\\[$battery\\])\
+(\\[$custom\\])\
+(\\[$aws\\])\
+$line_break\
+$sudo$status$time$character$shlvl\
+"""
+# right_format = """
+# $cmd_duration\
+# $battery\
+# $custom\
+# $aws\
+# """
+continuation_prompt = '[﬌ ](#666666) '
+
+command_timeout = 1000
+
+[character]
+success_symbol = ''
+error_symbol = ''
+# success_symbol = '[❯](green)'
+# error_symbol = '[❯](red)'
+vimcmd_symbol = '[ ](green)'
+vimcmd_replace_one_symbol = '[ ](purple)'
+vimcmd_replace_symbol = '[ ](purple)'
+vimcmd_visual_symbol = '[ ](yellow)'
+format = "$symbol"
+
+[fill]
+symbol = "-"
+
+[directory]
+truncation_length = 4
+
+[status]
+format = '[\[$symbol $common_meaning$signal_name$maybe_int\]]($style)'
+map_symbol = true
+disabled = false
+
+[cmd_duration]
+format = "[($duration)]($style)"
+
+[sudo]
+format = "$symbol"
+disabled = false
+
+[shlvl]
+threshold = 1
+symbol = "❯"
+repeat = true
+format = "[$symbol](green) "
+# format = "[$shlvl](#aaaaaa)"
+disabled = false
+
+[jobs]
+symbol = " "
+format = "[$symbol($number)](blue)"
+
+[aws]
+# symbol = " "
+symbol = " "
+format = '[($symbol($profile)( $region)( $duration))]($style)'
+# format = '[($symbol($profile))]($style) '
+disabled = false
+
+[aws.region_aliases]
+us-east-1 = "VA"
+us-east-2 = "OH"
+us-west-1 = "CA"
+us-west-2 = "OR"
+
+[custom.aws_vault]
+description = "AWS Vault credentials are present."
+symbol = " "
+when = '[[ ! -z "$AWS_VAULT" ]]'
+disabled = false
+
+[custom.aws_vault_proxy]
+description = "AWS Vault server is active."
+symbol = " "
+when = 'ps -o command | grep -E "^aws-vault.*(--ecs-server|--ec2-server|--server|-s)"'
+disabled = false
+
+# Programming Languages
+
+[java]
+symbol = " "
+format = "[$symbol( $version)](blue) "
+
+[scala]
+symbol = " "
+format = "[$symbol( $version)](blue) "
+
+[kotlin]
+symbol = " "
+format = "[$symbol( $version)](blue) "
+
+[golang]
+symbol = "🐹"
+format = "[$symbol( $version)](blue) "
+
+[rust]
+symbol = "🦀"
+format = "[$symbol( $version)](blue) "
+
+[python]
+symbol = " "
+format = '[$symbol( ($virtualenv:)$version)](blue) '
+
+[elixir]
+symbol = " "
+format = '[$symbol( $version \(OTP $otp_version\) )](blue) '
+
+# Build, Package and Deployment Tools
+[package]
+format = "[$symbol($version)](yellow) "
+
+[pulumi]
+symbol = "ﲳ "
+format = "[$symbol( $stack)](blue) "
