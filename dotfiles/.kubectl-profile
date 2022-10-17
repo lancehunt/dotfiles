@@ -501,7 +501,6 @@ alias kmulti-ssh="kubectl exec -it multitool -- /bin/ash"
 
 kinterval() {
   export KUBECTL_WATCH_INTERVAL=$1
-  source ~/.kubectl-aliases
 }
 
 kset() {
@@ -512,7 +511,7 @@ kunset() {
   unset KUBECONFIG
 }
 
-kconfig() {
+eksconfig() {
   aws eks update-kubeconfig --name $1
 }
 
