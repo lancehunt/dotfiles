@@ -151,7 +151,7 @@ alias lll='ls -lGhA'
 alias rdns='dig +noall +answer -x'
 
 # Git multi-email Author/Committer support
-git() {
+gitp() {
 
     if (( ${+GIT_OVERRIDE_EMAIL} )); then
         GIT_AUTHOR_EMAIL="$GIT_OVERRIDE_EMAIL" GIT_COMMITTER_EMAIL="$GIT_OVERRIDE_EMAIL" git $@
