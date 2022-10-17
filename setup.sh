@@ -7,6 +7,7 @@ sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.
 
 cd brew
 brew bundle
+cd ..
 
 cp dotfiles/.* ~/.
 cp -r wezterm ~/.config/.
