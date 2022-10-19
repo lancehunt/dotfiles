@@ -14,6 +14,12 @@ set relativenumber
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
+Plugin 'python-mode/python-mode'
+Plugin 'nvie/vim-flake8'
+Plugin 'sheerun/vim-polyglot'
+Plugin 'scrooloose/nerdtree'
+Plugin 'vim-airline/vim-airline'
+Plugin 'fatih/vim-go'
 
 call vundle#end()            " required
 filetype plugin indent on    " required

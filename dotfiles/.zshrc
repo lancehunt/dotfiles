@@ -123,3 +123,5 @@ fi
 [[ -f ~/.kubectl-profile ]] && source ~/.kubectl-profile
 [[ -f ~/.aws-profile ]] && source ~/.aws-profile
 
+[[ -f ~/.local-profile ]] && source ~/.local-profile
+
