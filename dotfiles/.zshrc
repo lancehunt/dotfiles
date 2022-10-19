@@ -29,6 +29,26 @@ stty stop undef		# Disable ctrl-s to freeze terminal.
 zle_highlight=('paste:none')
 
 ##############################################################################
+# Default ls color scheme
+##############################################################################
+export CLICOLOR=1
+export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
+
+##############################################################################
+# Shell command Replacements 
+##############################################################################
+
+if command -v zoxide &>/dev/null; then
+  eval "$(zoxide init zsh)"
+fi
+
+# EXA is a better ls written in rust: https://the.exa.website/
+if command -v exa &>/dev/null; then
+  alias ls='exa --git --group-directories-first --group --time-style=long-iso --icons'
+  export EXA_ICON_SPACING=2
+fi
+
+##############################################################################
 # Plugins
 ##############################################################################
 # Download Znap, if it's not there yet.
@@ -117,6 +137,8 @@ fi
 ##############################################################################
 # Source other Files
 ##############################################################################
+#[[ -f ~/.zsh-profile ]] && source ~/.zsh-profile
+
 [[ -f ~/.aliases ]] && source ~/.aliases
 [[ -f ~/.functions ]] && source ~/.functions
 
