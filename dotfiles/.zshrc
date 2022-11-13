@@ -132,7 +132,10 @@ if command -v pipenv &>/dev/null; then
   # Tell pipenv to create virtual environments inside the project directory
   export PIPENV_VENV_IN_PROJECT=1
 fi
-
+##############################################################################
+# Misc Settings
+##############################################################################
+ulimit -n 2048
 
 ##############################################################################
 # Source other Files
