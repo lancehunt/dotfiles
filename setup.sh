@@ -19,4 +19,4 @@ cp -r rectangle/Preferences/. ~/Library/Preferences/.
 
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 
-
+git secrets --register-aws --global

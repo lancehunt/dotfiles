@@ -14,3 +14,6 @@ repos:
         exclude: (.*)jinja
       - id: mixed-line-ending
       - id: requirements-txt-fixer
+      - id: detect-aws-credentials
+        args: [--allow-missing-credentials]
+      - id: detect-private-key
