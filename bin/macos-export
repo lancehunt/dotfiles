@@ -1,0 +1,128 @@
+#!/usr/bin/env zsh
+# Export current macOS settings to files
+
+echo "📦 Exporting macOS settings..."
+
+# Navigate to repo root (handle symlinks correctly)
+if [[ -L "$0" ]]; then
+    SCRIPT_PATH="$(readlink "$0")"
+else
+    SCRIPT_PATH="$0"
+fi
+SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$REPO_ROOT"
+
+# Create settings directory
+mkdir -p macos/settings
+
+# ============================================================================
+# Dock Settings
+# ============================================================================
+echo "  📊 Exporting Dock settings..."
+defaults export com.apple.dock macos/settings/dock.plist 2>/dev/null || \
+    defaults read com.apple.dock > macos/settings/dock.txt 2>/dev/null || \
+    echo "  ⚠️  Could not export Dock settings"
+
+# ============================================================================
+# Finder Settings
+# ============================================================================
+echo "  📁 Exporting Finder settings..."
+defaults export com.apple.finder macos/settings/finder.plist 2>/dev/null || \
+    defaults read com.apple.finder > macos/settings/finder.txt 2>/dev/null || \
+    echo "  ⚠️  Could not export Finder settings"
+
+# ============================================================================
+# Keyboard Settings (Global Domain)
+# ============================================================================
+echo "  ⌨️  Exporting Keyboard settings..."
+defaults export NSGlobalDomain macos/settings/keyboard.plist 2>/dev/null || \
+    defaults read NSGlobalDomain > macos/settings/keyboard.txt 2>/dev/null || \
+    echo "  ⚠️  Could not export Keyboard settings"
+
+# ============================================================================
+# Trackpad Settings
+# ============================================================================
+echo "  🖱️  Exporting Trackpad settings..."
+defaults export com.apple.AppleMultitouchTrackpad macos/settings/trackpad.plist 2>/dev/null || \
+    defaults read com.apple.AppleMultitouchTrackpad > macos/settings/trackpad.txt 2>/dev/null || \
+    echo "  ⚠️  Could not export Trackpad settings"
+
+defaults export com.apple.driver.AppleBluetoothMultitouch.trackpad macos/settings/trackpad-bluetooth.plist 2>/dev/null || \
+    defaults read com.apple.driver.AppleBluetoothMultitouch.trackpad > macos/settings/trackpad-bluetooth.txt 2>/dev/null || \
+    echo "  ⚠️  Could not export Bluetooth Trackpad settings"
+
+# ============================================================================
+# Screenshot Settings
+# ============================================================================
+echo "  📸 Exporting Screenshot settings..."
+defaults export com.apple.screencapture macos/settings/screenshots.plist 2>/dev/null || \
+    defaults read com.apple.screencapture > macos/settings/screenshots.txt 2>/dev/null || \
+    echo "  ⚠️  Could not export Screenshot settings"
+
+# ============================================================================
+# Menu Bar & System UI
+# ============================================================================
+echo "  📋 Exporting Menu Bar settings..."
+defaults export com.apple.systemuiserver macos/settings/menubar.plist 2>/dev/null || \
+    defaults read com.apple.systemuiserver > macos/settings/menubar.txt 2>/dev/null || \
+    echo "  ⚠️  Could not export Menu Bar settings"
+
+# ============================================================================
+# Export human-readable summary
+# ============================================================================
+echo "  📝 Creating human-readable settings summary..."
+
+cat > macos/settings/CURRENT_SETTINGS.md << EOF
+# Current macOS Settings
+
+Generated on: $(date)
+
+## Dock
+- Size: $(defaults read com.apple.dock tilesize 2>/dev/null || echo "default")
+- Position: $(defaults read com.apple.dock orientation 2>/dev/null || echo "bottom")
+- Auto-hide: $(defaults read com.apple.dock autohide 2>/dev/null || echo "0 (false)")
+- Magnification: $(defaults read com.apple.dock magnification 2>/dev/null || echo "0 (false)")
+- Show recents: $(defaults read com.apple.dock show-recents 2>/dev/null || echo "1 (true)")
+- Minimize effect: $(defaults read com.apple.dock mineffect 2>/dev/null || echo "genie")
+
+## Finder
+- Show hidden files: $(defaults read com.apple.finder AppleShowAllFiles 2>/dev/null || echo "0 (false)")
+- Show file extensions: $(defaults read NSGlobalDomain AppleShowAllExtensions 2>/dev/null || echo "0 (false)")
+- Default view: $(defaults read com.apple.finder FXPreferredViewStyle 2>/dev/null || echo "icnv (icon)")
+- Show path bar: $(defaults read com.apple.finder ShowPathbar 2>/dev/null || echo "0 (false)")
+- Show status bar: $(defaults read com.apple.finder ShowStatusBar 2>/dev/null || echo "0 (false)")
+
+## Keyboard
+- Key repeat rate: $(defaults read NSGlobalDomain KeyRepeat 2>/dev/null || echo "default")
+- Initial key delay: $(defaults read NSGlobalDomain InitialKeyRepeat 2>/dev/null || echo "default")
+- Function keys: $(defaults read NSGlobalDomain com.apple.keyboard.fnState 2>/dev/null || echo "default")
+
+## Trackpad
+- Tracking speed: $(defaults read NSGlobalDomain com.apple.trackpad.scaling 2>/dev/null || echo "default")
+- Tap to click: $(defaults read com.apple.AppleMultitouchTrackpad Clicking 2>/dev/null || echo "0 (false)")
+- Two finger tap (right-click): $(defaults read com.apple.AppleMultitouchTrackpad TrackpadRightClick 2>/dev/null || echo "1 (true)")
+- Three finger drag: $(defaults read com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag 2>/dev/null || echo "0 (false)")
+
+## Screenshots
+- Format: $(defaults read com.apple.screencapture type 2>/dev/null || echo "png")
+- Location: $(defaults read com.apple.screencapture location 2>/dev/null || echo "~/Desktop")
+- Show thumbnail: $(defaults read com.apple.screencapture show-thumbnail 2>/dev/null || echo "1 (true)")
+- Include date: $(defaults read com.apple.screencapture include-date 2>/dev/null || echo "0 (false)")
+
+## System UI
+- Dark mode: $(defaults read NSGlobalDomain AppleInterfaceStyle 2>/dev/null || echo "Light")
+- Accent color: $(defaults read NSGlobalDomain AppleAccentColor 2>/dev/null || echo "default (blue)")
+- Highlight color: $(defaults read NSGlobalDomain AppleHighlightColor 2>/dev/null || echo "default")
+EOF
+
+echo ""
+echo "✅ Export complete!"
+echo ""
+echo "Settings saved to: $REPO_ROOT/macos/settings/"
+echo "Summary: $REPO_ROOT/macos/settings/CURRENT_SETTINGS.md"
+echo ""
+echo "Next steps:"
+echo "  1. Review: cat macos/settings/CURRENT_SETTINGS.md"
+echo "  2. Commit: git add macos/settings && git commit -m 'Update macOS settings'"
+echo "  3. Apply on another machine: macos-apply"

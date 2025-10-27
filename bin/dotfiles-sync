@@ -172,6 +172,8 @@ if [[ ! -L ~/.local/bin/dotfiles-sync ]]; then
     ln -sf "$REPO_ROOT/bin/dotfiles-restore" ~/.local/bin/dotfiles-restore
     ln -sf "$REPO_ROOT/bin/dotfiles-setup" ~/.local/bin/dotfiles-setup
     ln -sf "$REPO_ROOT/bin/dotfiles-add-app" ~/.local/bin/dotfiles-add-app
+    ln -sf "$REPO_ROOT/bin/macos-export" ~/.local/bin/macos-export
+    ln -sf "$REPO_ROOT/bin/macos-apply" ~/.local/bin/macos-apply
 fi
 
 # ============================================================================

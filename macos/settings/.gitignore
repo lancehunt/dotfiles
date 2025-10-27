@@ -1,0 +1,6 @@
+# Optionally ignore binary .plist files (uncomment if desired)
+# *.plist
+
+# Keep text exports and markdown
+!*.txt
+!*.md

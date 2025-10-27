@@ -34,7 +34,9 @@ ln -sf "$REPO_ROOT/bin/dotfiles-sync" ~/.local/bin/dotfiles-sync
 ln -sf "$REPO_ROOT/bin/dotfiles-restore" ~/.local/bin/dotfiles-restore
 ln -sf "$REPO_ROOT/bin/dotfiles-setup" ~/.local/bin/dotfiles-setup
 ln -sf "$REPO_ROOT/bin/dotfiles-add-app" ~/.local/bin/dotfiles-add-app
-echo "   Commands available: dotfiles-sync, dotfiles-restore, dotfiles-setup, dotfiles-add-app"
+ln -sf "$REPO_ROOT/bin/macos-export" ~/.local/bin/macos-export
+ln -sf "$REPO_ROOT/bin/macos-apply" ~/.local/bin/macos-apply
+echo "   Commands available: dotfiles-*, macos-*"
 
 # Install Homebrew
 echo "\n📦 Installing Homebrew..."
@@ -91,5 +93,18 @@ git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim 2
 # Setup git-secrets
 echo "\n🔐 Configuring git-secrets..."
 git secrets --register-aws --global
+
+# Optionally apply macOS settings
+if [[ -d "macos/settings" && -f "bin/macos-apply" ]]; then
+    echo ""
+    echo "🍎 macOS settings are available."
+    read "apply_macos?Apply saved macOS settings now? (y/N): "
+
+    if [[ "$apply_macos" == "y" || "$apply_macos" == "Y" ]]; then
+        "$REPO_ROOT/bin/macos-apply"
+    else
+        echo "   Skipped. Run 'macos-apply' later to apply settings."
+    fi
+fi
 
 echo "\n✅ Setup complete! Restart your terminal to apply changes."

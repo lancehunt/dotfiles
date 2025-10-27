@@ -54,6 +54,8 @@ bin/          # Scripts
 - `dotfiles-restore` - Copy repo → local (checks for unsync'd changes)
 - `dotfiles-add-app` - Add app config to repo (smart detection)
 - `dotfiles-setup` - Fresh install (Homebrew, packages, configs)
+- `macos-export` - Export current macOS settings
+- `macos-apply` - Apply saved macOS settings
 
 ## Safety
 

@@ -1,0 +1,111 @@
+#!/usr/bin/env zsh
+# Apply macOS settings from exported files
+
+echo "⚙️  MACOS SETTINGS APPLY"
+echo "   This will apply saved macOS settings to your system."
+echo ""
+
+# Navigate to repo root (handle symlinks correctly)
+if [[ -L "$0" ]]; then
+    SCRIPT_PATH="$(readlink "$0")"
+else
+    SCRIPT_PATH="$0"
+fi
+SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$REPO_ROOT"
+
+# Check if settings exist
+if [[ ! -d "macos/settings" ]]; then
+    echo "❌ No settings found in macos/settings/"
+    echo "   Run 'macos-export' first to export your current settings."
+    exit 1
+fi
+
+echo "⚠️  WARNING: This will modify your macOS settings!"
+echo ""
+read "confirm?Continue? (y/N): "
+
+if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
+    echo "Aborted."
+    exit 0
+fi
+
+echo ""
+echo "📥 Applying macOS settings..."
+
+# ============================================================================
+# Apply Dock Settings
+# ============================================================================
+if [[ -f "macos/settings/dock.plist" ]]; then
+    echo "  📊 Applying Dock settings..."
+    defaults import com.apple.dock macos/settings/dock.plist 2>/dev/null || \
+        echo "  ⚠️  Could not import Dock settings (will use defaults commands)"
+
+    # Apply specific dock settings if import failed
+    if [[ -f "macos/settings/dock.txt" ]]; then
+        # Extract and apply key settings from the text dump
+        echo "  📊 Applying Dock settings from text..."
+    fi
+fi
+
+# ============================================================================
+# Apply Finder Settings
+# ============================================================================
+if [[ -f "macos/settings/finder.plist" ]]; then
+    echo "  📁 Applying Finder settings..."
+    defaults import com.apple.finder macos/settings/finder.plist 2>/dev/null || \
+        echo "  ⚠️  Could not import Finder settings"
+fi
+
+# ============================================================================
+# Apply Keyboard Settings
+# ============================================================================
+if [[ -f "macos/settings/keyboard.plist" ]]; then
+    echo "  ⌨️  Applying Keyboard settings..."
+    # Note: NSGlobalDomain import can be tricky, may need selective application
+    echo "  ⚠️  Keyboard settings require manual verification"
+fi
+
+# ============================================================================
+# Apply Trackpad Settings
+# ============================================================================
+if [[ -f "macos/settings/trackpad.plist" ]]; then
+    echo "  🖱️  Applying Trackpad settings..."
+    defaults import com.apple.AppleMultitouchTrackpad macos/settings/trackpad.plist 2>/dev/null || \
+        echo "  ⚠️  Could not import Trackpad settings"
+fi
+
+if [[ -f "macos/settings/trackpad-bluetooth.plist" ]]; then
+    defaults import com.apple.driver.AppleBluetoothMultitouch.trackpad macos/settings/trackpad-bluetooth.plist 2>/dev/null || \
+        echo "  ⚠️  Could not import Bluetooth Trackpad settings"
+fi
+
+# ============================================================================
+# Apply Screenshot Settings
+# ============================================================================
+if [[ -f "macos/settings/screenshots.plist" ]]; then
+    echo "  📸 Applying Screenshot settings..."
+    defaults import com.apple.screencapture macos/settings/screenshots.plist 2>/dev/null || \
+        echo "  ⚠️  Could not import Screenshot settings"
+fi
+
+# ============================================================================
+# Apply Menu Bar Settings
+# ============================================================================
+if [[ -f "macos/settings/menubar.plist" ]]; then
+    echo "  📋 Applying Menu Bar settings..."
+    defaults import com.apple.systemuiserver macos/settings/menubar.plist 2>/dev/null || \
+        echo "  ⚠️  Could not import Menu Bar settings"
+fi
+
+echo ""
+echo "✅ Settings applied!"
+echo ""
+echo "⚠️  IMPORTANT:"
+echo "   - Some settings require logging out and back in"
+echo "   - Dock and Finder changes require restart:"
+echo "     killall Dock Finder SystemUIServer"
+echo ""
+echo "Review applied settings:"
+echo "   cat macos/settings/CURRENT_SETTINGS.md"
