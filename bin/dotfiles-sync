@@ -68,7 +68,7 @@ if [[ -d "apps" ]]; then
         app_name="${app_dir#apps/}"
         app_name="${app_name%/}"
 
-        # Check if this app has a Preferences subdirectory (for plists)
+        # Check for Preferences subdirectory (for plists)
         if [[ -d "$app_dir/Preferences" ]]; then
             # Sync .plist files from ~/Library/Preferences/
             for dest_file in "$app_dir/Preferences/"*.plist; do
@@ -84,8 +84,23 @@ if [[ -d "apps" ]]; then
                     ((skipped++))
                 fi
             done
-        else
-            # No Preferences subdir, sync from ~/.config/
+        fi
+
+        # Check for AppSupport subdirectory (for Application Support files)
+        if [[ -d "$app_dir/AppSupport" ]]; then
+            # Sync from ~/Library/Application Support/
+            src_dir="$HOME/Library/Application Support/$app_name"
+
+            if [[ -d "$src_dir" ]]; then
+                mkdir -p "$app_dir/AppSupport"
+                cp -r "$src_dir/." "$app_dir/AppSupport/" 2>/dev/null && ((synced++)) || ((skipped++))
+            else
+                ((skipped++))
+            fi
+        fi
+
+        # If no special subdirs, sync from ~/.config/
+        if [[ ! -d "$app_dir/Preferences" && ! -d "$app_dir/AppSupport" ]]; then
             src_dir="$HOME/.config/$app_name"
 
             if [[ -d "$src_dir" ]]; then

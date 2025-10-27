@@ -104,10 +104,21 @@ if [[ -d "apps" ]]; then
         app_name="${app_dir#apps/}"
         app_name="${app_name%/}"
 
+        # Restore Preferences
         if [[ -d "$app_dir/Preferences" ]]; then
             echo "   - $app_name preferences"
             cp -r "$app_dir/Preferences/." ~/Library/Preferences/ 2>/dev/null || true
-        else
+        fi
+
+        # Restore Application Support
+        if [[ -d "$app_dir/AppSupport" ]]; then
+            echo "   - $app_name application support"
+            mkdir -p "$HOME/Library/Application Support/$app_name"
+            cp -r "$app_dir/AppSupport/." "$HOME/Library/Application Support/$app_name/" 2>/dev/null || true
+        fi
+
+        # Restore from .config if no special subdirs
+        if [[ ! -d "$app_dir/Preferences" && ! -d "$app_dir/AppSupport" ]]; then
             echo "   - $app_name config"
             mkdir -p ~/.config
             cp -r "$app_dir" ~/.config/ 2>/dev/null || true

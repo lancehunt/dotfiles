@@ -48,7 +48,7 @@ if [[ ! -e "$SOURCE" ]]; then
     exit 1
 fi
 
-# Determine destination based on source type
+# Determine destination based on source type and location
 if [[ -f "$SOURCE" && "$SOURCE" == *.plist ]]; then
     # It's a .plist file - goes in Preferences/
     DEST_DIR="apps/$APP_NAME/Preferences"
@@ -58,8 +58,30 @@ if [[ -f "$SOURCE" && "$SOURCE" == *.plist ]]; then
     echo "✅ Added: $DEST_DIR/$FILENAME"
     echo "   Type: Preference file (will sync from ~/Library/Preferences/)"
 
+elif [[ "$SOURCE" == *"Library/Application Support"* ]]; then
+    # It's from Application Support - goes in AppSupport/
+    if [[ -d "$SOURCE" ]]; then
+        DEST_DIR="apps/$APP_NAME/AppSupport"
+        mkdir -p "$DEST_DIR"
+        cp -r "$SOURCE/." "$DEST_DIR/"
+        echo "✅ Added: $DEST_DIR/"
+    else
+        # Single file from Application Support
+        DEST_DIR="apps/$APP_NAME/AppSupport"
+        FILENAME="$(basename "$SOURCE")"
+        # Preserve subdirectory structure if any
+        SUBPATH="${SOURCE#*Library/Application Support/*/}"
+        if [[ "$SUBPATH" != "$SOURCE" && "$SUBPATH" =~ / ]]; then
+            DEST_DIR="$DEST_DIR/$(dirname "$SUBPATH")"
+        fi
+        mkdir -p "$DEST_DIR"
+        cp "$SOURCE" "$DEST_DIR/"
+        echo "✅ Added: $DEST_DIR/$FILENAME"
+    fi
+    echo "   Type: Application Support file/directory (will sync from ~/Library/Application Support/$APP_NAME/)"
+
 elif [[ -d "$SOURCE" ]]; then
-    # It's a directory - goes directly in apps/
+    # It's a directory - goes directly in apps/ (assumes ~/.config)
     DEST_DIR="apps/$APP_NAME"
     mkdir -p "$DEST_DIR"
     cp -r "$SOURCE/." "$DEST_DIR/"
@@ -70,6 +92,7 @@ else
     echo "❌ Error: Source must be either:"
     echo "   - A .plist file (for app preferences)"
     echo "   - A directory (for config files)"
+    echo "   - A file/directory from ~/Library/Application Support/"
     exit 1
 fi
 

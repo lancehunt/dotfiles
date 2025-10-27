@@ -62,13 +62,21 @@ if [[ -d "apps" ]]; then
         app_name="${app_dir#apps/}"
         app_name="${app_name%/}"
 
-        # Check if this app has a Preferences subdirectory (for plists)
+        # Install Preferences
         if [[ -d "$app_dir/Preferences" ]]; then
-            # Copy .plist files to ~/Library/Preferences/
             echo "   - $app_name preferences"
             cp -r "$app_dir/Preferences/." ~/Library/Preferences/ 2>/dev/null || true
-        else
-            # Copy to ~/.config/
+        fi
+
+        # Install Application Support
+        if [[ -d "$app_dir/AppSupport" ]]; then
+            echo "   - $app_name application support"
+            mkdir -p "$HOME/Library/Application Support/$app_name"
+            cp -r "$app_dir/AppSupport/." "$HOME/Library/Application Support/$app_name/" 2>/dev/null || true
+        fi
+
+        # Install from .config if no special subdirs
+        if [[ ! -d "$app_dir/Preferences" && ! -d "$app_dir/AppSupport" ]]; then
             echo "   - $app_name config"
             mkdir -p ~/.config
             cp -r "$app_dir" ~/.config/ 2>/dev/null || true
