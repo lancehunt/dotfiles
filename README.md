@@ -29,6 +29,9 @@ dotfiles-add-app ~/Library/Preferences/com.microsoft.VSCode.plist vscode
 
 # Add a config directory
 dotfiles-add-app ~/.config/nvim nvim
+
+# Add Application Support files (like VSCode settings)
+dotfiles-add-app "~/Library/Application Support/Code/User/settings.json" Code
 ```
 
 After adding files once, `dotfiles-sync` automatically keeps them in sync.
@@ -39,6 +42,7 @@ After adding files once, `dotfiles-sync` automatically keeps them in sync.
 dotfiles/     # Shell configs from ~/
 apps/         # Application configs
   */Preferences/  # .plist files from ~/Library/Preferences
+  */AppSupport/   # Files from ~/Library/Application Support
   */              # Directories from ~/.config
 brew/         # Brewfile (managed by brew bundle)
 bin/          # Scripts
