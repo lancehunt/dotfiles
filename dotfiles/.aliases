@@ -179,8 +179,3 @@ xpand() {
 genrand() {
   openssl rand -base64 128 |shasum -a 256|head -c36
 }
-
-# Dotfiles management
-alias dotfiles-sync='~/code/lancehunt/dotfiles/bin/sync.sh'
-alias dotfiles-commit='cd ~/code/lancehunt/dotfiles && git add . && git commit && git push && cd -'
-alias dotfiles-update='dotfiles-sync && dotfiles-commit'

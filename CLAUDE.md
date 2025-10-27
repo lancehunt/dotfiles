@@ -11,8 +11,9 @@ This is a macOS dotfiles repository that manages personal development environmen
 ```
 .
 ├── bin/               # Scripts and executables
-│   ├── setup.sh      # Main installation script
-│   └── sync.sh       # Sync script to backup current config
+│   ├── dotfiles-setup    # Main installation script
+│   ├── dotfiles-sync     # Sync script to backup current config
+│   └── dotfiles-restore  # Restore from repo with safety checks
 ├── brew/             # Homebrew package management
 │   └── Brewfile      # Defines all brew packages, casks, VSCode extensions, and Go tools
 ├── dotfiles/         # Shell and tool configuration files (synced from ~/)
@@ -36,7 +37,7 @@ This is a macOS dotfiles repository that manages personal development environmen
 ### Initial Setup
 ```bash
 # Full system setup (installs Homebrew, oh-my-zsh, packages, and copies configs)
-./bin/setup.sh
+./bin/dotfiles-setup
 ```
 
 ### Package Management
@@ -102,7 +103,7 @@ The `brew/Brewfile` manages four types of installations:
 **exa**: Modern `ls` replacement with git integration and icons
 **starship**: Cross-shell prompt with git status and language version info
 **atuin**: Shell history sync and search tool
-**git-secrets**: Prevents committing AWS credentials (registered globally in bin/setup.sh)
+**git-secrets**: Prevents committing AWS credentials (registered globally in bin/dotfiles-setup)
 
 ### Pre-commit Configuration
 The `.pre-commit-config.yaml` enforces:
@@ -130,8 +131,6 @@ cd ~/code/lancehunt/dotfiles && git diff
 # Commit and push
 dotfiles-commit
 
-# Or do everything in one command
-dotfiles-update
 ```
 
 ### Restore from Repository (Safe)
@@ -145,8 +144,8 @@ dotfiles-restore
 # 3. Offer options: abort, backup, or continue
 ```
 
-**⚠️ Important**: Never use `bin/setup.sh` on an existing system!
-- `bin/setup.sh` - Fresh installs only (overwrites everything)
+**⚠️ Important**: Never use `dotfiles-setup` on an existing system!
+- `dotfiles-setup` - Fresh installs only (overwrites everything)
 - `dotfiles-restore` - Safe restore with diff checking
 
 ### Automated Daily Sync (Optional)
@@ -242,8 +241,8 @@ git commit -m "Add neovim config"
 ### Testing Changes
 Since this repository directly modifies system configuration:
 1. Test changes in a non-production environment when possible
-2. Backup existing configurations before running `bin/setup.sh`
-3. Review `bin/setup.sh` before execution to understand what will be modified
+2. Backup existing configurations before running `dotfiles-setup`
+3. Review `bin/dotfiles-setup` before execution to understand what will be modified
 4. Run `pre-commit run --all-files` before committing
 
 ## Important Files Not to Modify Directly

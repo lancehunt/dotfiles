@@ -140,6 +140,18 @@ for pattern in ['dotfiles/.*', 'apps/**/*.toml', 'apps/**/*.json', 'apps/**/*.ym
 PYTHON_EOF
 
 # ============================================================================
+# Ensure symlinks exist
+# ============================================================================
+
+if [[ ! -L ~/.local/bin/dotfiles-sync ]]; then
+    echo "\n🔗 Creating command symlinks..."
+    mkdir -p ~/.local/bin
+    ln -sf "$REPO_ROOT/bin/dotfiles-sync" ~/.local/bin/dotfiles-sync
+    ln -sf "$REPO_ROOT/bin/dotfiles-restore" ~/.local/bin/dotfiles-restore
+    ln -sf "$REPO_ROOT/bin/dotfiles-setup" ~/.local/bin/dotfiles-setup
+fi
+
+# ============================================================================
 # Summary
 # ============================================================================
 
@@ -149,8 +161,7 @@ if [[ -n $(git status --porcelain) ]]; then
     git status --short
     echo "\n💡 Next steps:"
     echo "   - Review: git diff"
-    echo "   - Commit: git add . && git commit -m \"Update dotfiles\""
-    echo "   - Or use: dotfiles-commit"
+    echo "   - Commit: git add . && git commit -m \"Update dotfiles\" && git push"
 else
     echo "✅ Everything is already in sync!"
 fi

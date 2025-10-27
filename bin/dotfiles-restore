@@ -108,4 +108,11 @@ if [[ -d "apps" ]]; then
     done
 fi
 
+# Create symlinks in ~/.local/bin for easy access
+echo "\n🔗 Creating command symlinks..."
+mkdir -p ~/.local/bin
+ln -sf "$REPO_ROOT/bin/dotfiles-sync" ~/.local/bin/dotfiles-sync
+ln -sf "$REPO_ROOT/bin/dotfiles-restore" ~/.local/bin/dotfiles-restore
+ln -sf "$REPO_ROOT/bin/dotfiles-setup" ~/.local/bin/dotfiles-setup
+
 echo "\n✅ Restore complete! Restart applications to apply changes."

@@ -7,7 +7,7 @@
 
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/lhunt/code/lancehunt/dotfiles/bin/sync.sh</string>
+        <string>/Users/lhunt/.local/bin/dotfiles-sync</string>
     </array>
 
     <key>StartCalendarInterval</key>

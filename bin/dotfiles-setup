@@ -20,6 +20,14 @@ fi
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$REPO_ROOT"
 
+# Create symlinks in ~/.local/bin for easy access
+echo "\n🔗 Creating command symlinks..."
+mkdir -p ~/.local/bin
+ln -sf "$REPO_ROOT/bin/dotfiles-sync" ~/.local/bin/dotfiles-sync
+ln -sf "$REPO_ROOT/bin/dotfiles-restore" ~/.local/bin/dotfiles-restore
+ln -sf "$REPO_ROOT/bin/dotfiles-setup" ~/.local/bin/dotfiles-setup
+echo "   Commands available: dotfiles-sync, dotfiles-restore, dotfiles-setup"
+
 # Install Homebrew
 echo "\n📦 Installing Homebrew..."
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"

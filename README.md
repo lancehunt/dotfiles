@@ -6,13 +6,12 @@ Personal macOS dotfiles and configuration management.
 
 ### Fresh Install
 ```bash
-./bin/setup.sh
+./bin/dotfiles-setup
 ```
 
 ### Daily Usage
 ```bash
 dotfiles-sync      # Save local configs to repo
-dotfiles-update    # Sync + commit + push
 dotfiles-restore   # Restore from repo (safe, checks for local changes)
 ```
 
@@ -50,9 +49,8 @@ bin/          # Scripts
 ## Commands
 
 - `dotfiles-sync` - Copy local → repo, auto-fix formatting
-- `dotfiles-update` - Sync + commit + push in one command
 - `dotfiles-restore` - Copy repo → local (checks for unsync'd changes)
-- `bin/setup.sh` - Fresh install (Homebrew, packages, configs)
+- `dotfiles-setup` - Fresh install (Homebrew, packages, configs)
 
 ## Safety
 
