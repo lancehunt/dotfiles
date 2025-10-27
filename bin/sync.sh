@@ -3,8 +3,8 @@
 #
 # This script automatically syncs files based on the repository structure:
 # - Files in dotfiles/ are synced from ~/
-# - Directories at repo root are synced from ~/.config/
-# - Files in */Preferences/ are synced from ~/Library/Preferences/
+# - Directories in apps/ with Preferences/ subdirs sync plists from ~/Library/Preferences/
+# - Directories in apps/ without Preferences/ sync from ~/.config/
 #
 # To add a new file to sync: just copy it to the appropriate location once,
 # and this script will keep it in sync from then on.
@@ -47,57 +47,49 @@ fi
 echo "   Synced: $synced | Skipped: $skipped"
 
 # ============================================================================
-# Sync config directories from ~/.config
+# Sync application configs from apps/
 # ============================================================================
 
-echo "\n⚙️  Syncing config directories..."
+echo "\n⚙️  Syncing application configs..."
 synced=0
 skipped=0
 
-# Find directories at repo root that should come from ~/.config
-# (exclude special dirs like .git, brew, dotfiles, iterm2, rectangle, macos)
-for dest_dir in */; do
-    dest_dir="${dest_dir%/}"
+if [[ -d "apps" ]]; then
+    for app_dir in apps/*/; do
+        [[ ! -d "$app_dir" ]] && continue
 
-    # Skip special directories
-    case "$dest_dir" in
-        .git|brew|dotfiles|iterm2|rectangle|macos) continue ;;
-    esac
+        app_name="${app_dir#apps/}"
+        app_name="${app_name%/}"
 
-    src_dir="$HOME/.config/$dest_dir"
+        # Check if this app has a Preferences subdirectory (for plists)
+        if [[ -d "$app_dir/Preferences" ]]; then
+            # Sync .plist files from ~/Library/Preferences/
+            for dest_file in "$app_dir/Preferences/"*.plist; do
+                [[ ! -f "$dest_file" ]] && continue
 
-    if [[ -d "$src_dir" ]]; then
-        cp -r "$src_dir/." "$dest_dir/" 2>/dev/null && ((synced++)) || ((skipped++))
-    else
-        ((skipped++))
-    fi
-done
+                filename="${dest_file##*/}"
+                src_file="$HOME/Library/Preferences/$filename"
 
-echo "   Synced: $synced | Skipped: $skipped"
+                if [[ -f "$src_file" ]]; then
+                    mkdir -p "$(dirname "$dest_file")"
+                    cp "$src_file" "$dest_file" 2>/dev/null && ((synced++)) || ((skipped++))
+                else
+                    ((skipped++))
+                fi
+            done
+        else
+            # No Preferences subdir, sync from ~/.config/
+            src_dir="$HOME/.config/$app_name"
 
-# ============================================================================
-# Sync application preferences from ~/Library/Preferences
-# ============================================================================
-
-echo "\n🎨 Syncing application preferences..."
-synced=0
-skipped=0
-
-# Find .plist files in */Preferences/ directories
-for dest_file in */Preferences/*.plist; do
-    [[ ! -f "$dest_file" ]] && continue
-
-    # Extract just the filename (e.g., com.googlecode.iterm2.plist)
-    filename="${dest_file##*/}"
-    src_file="$HOME/Library/Preferences/$filename"
-
-    if [[ -f "$src_file" ]]; then
-        mkdir -p "$(dirname "$dest_file")"
-        cp "$src_file" "$dest_file" 2>/dev/null && ((synced++)) || ((skipped++))
-    else
-        ((skipped++))
-    fi
-done
+            if [[ -d "$src_dir" ]]; then
+                mkdir -p "$app_dir"
+                cp -r "$src_dir/." "$app_dir/" 2>/dev/null && ((synced++)) || ((skipped++))
+            else
+                ((skipped++))
+            fi
+        fi
+    done
+fi
 
 echo "   Synced: $synced | Skipped: $skipped"
 

@@ -15,18 +15,20 @@ This is a macOS dotfiles repository that manages personal development environmen
 │   └── sync.sh       # Sync script to backup current config
 ├── brew/             # Homebrew package management
 │   └── Brewfile      # Defines all brew packages, casks, VSCode extensions, and Go tools
-├── dotfiles/         # Shell and tool configuration files
+├── dotfiles/         # Shell and tool configuration files (synced from ~/)
 │   ├── .zshrc        # Zsh configuration
 │   ├── .aliases      # Shell aliases and shortcuts
 │   ├── .gitconfig    # Git configuration
 │   ├── .vimrc        # Vim configuration
 │   ├── .aws-profile  # AWS CLI helpers
 │   └── .kubectl-profile  # Kubernetes CLI helpers
-├── starship/         # Starship prompt configuration
-├── iterm2/           # iTerm2 preferences
-├── joplin-desktop/   # Joplin note-taking app configuration
-├── rectangle/        # Rectangle window manager preferences
-└── macos/            # macOS system settings
+└── apps/             # Application configurations
+    ├── starship/     # Starship prompt (from ~/.config/starship)
+    ├── iterm2/       # iTerm2 preferences
+    │   └── Preferences/  # .plist files from ~/Library/Preferences
+    ├── rectangle/    # Rectangle window manager
+    │   └── Preferences/  # .plist files from ~/Library/Preferences
+    └── macos/        # macOS system settings
 ```
 
 ## Common Commands
@@ -158,27 +160,35 @@ The `sync.sh` script uses the repository structure to determine what to sync:
    - Any file in `dotfiles/` is synced from `~/`
    - Example: `dotfiles/.zshrc` syncs from `~/.zshrc`
 
-2. **Config directories** (repo root)
-   - Any directory at repo root (except special dirs) syncs from `~/.config/`
-   - Example: `starship/` syncs from `~/.config/starship/`
-   - Special dirs excluded: `.git`, `brew`, `dotfiles`, `iterm2`, `rectangle`, `macos`
+2. **Application configs** (`apps/` directory)
+   - Apps with `Preferences/` subdirectory sync `.plist` files from `~/Library/Preferences/`
+     - Example: `apps/iterm2/Preferences/com.googlecode.iterm2.plist` syncs from `~/Library/Preferences/com.googlecode.iterm2.plist`
+   - Apps without `Preferences/` sync from `~/.config/`
+     - Example: `apps/starship/` syncs from `~/.config/starship/`
 
-3. **Application preferences** (`*/Preferences/` directories)
-   - Any `.plist` file in a `Preferences/` subdirectory syncs from `~/Library/Preferences/`
-   - Example: `iterm2/Preferences/com.googlecode.iterm2.plist` syncs from `~/Library/Preferences/com.googlecode.iterm2.plist`
+**To add a new dotfile:**
+```bash
+cp ~/.bashrc ~/code/lancehunt/dotfiles/dotfiles/.bashrc
+```
 
-**To add a new file to sync:**
-1. Copy it once to the appropriate location in the repo
-2. Run `dotfiles-sync` - it will keep it in sync automatically
-3. No need to edit the sync script!
+**To add a new app config:**
+```bash
+# For .plist preferences:
+mkdir -p ~/code/lancehunt/dotfiles/apps/myapp/Preferences
+cp ~/Library/Preferences/com.myapp.plist ~/code/lancehunt/dotfiles/apps/myapp/Preferences/
+
+# For .config directories:
+cp -r ~/.config/myapp ~/code/lancehunt/dotfiles/apps/myapp
+```
+
+After adding files, run `dotfiles-sync` - they'll be kept in sync automatically!
 
 **Currently synced:**
 - Brewfile (all installed packages)
 - Shell: .zshrc, .aliases, .zprofile, .zshenv, .vimrc
 - Git: .gitconfig, .global_gitattributes
 - Profiles: .aws-profile, .kubectl-profile
-- Configs: starship, joplin-desktop
-- Apps: iTerm2, Rectangle
+- Apps: starship, iTerm2, Rectangle, macOS settings
 
 ## Modifying This Repository
 
@@ -198,23 +208,20 @@ git commit -m "Add .bashrc to dotfiles"
 # From now on, dotfiles-sync will keep it in sync automatically!
 ```
 
-### Adding a New Config Directory
+### Adding a New App Config
 ```bash
-# Example: Add neovim config to sync
-cp -r ~/.config/nvim ~/code/lancehunt/dotfiles/nvim
+# Example 1: Add app with .plist preferences (like VS Code)
+mkdir -p ~/code/lancehunt/dotfiles/apps/vscode/Preferences
+cp ~/Library/Preferences/com.microsoft.VSCode.plist ~/code/lancehunt/dotfiles/apps/vscode/Preferences/
 cd ~/code/lancehunt/dotfiles
-git add nvim
-git commit -m "Add neovim config"
-```
-
-### Adding a New App Preference
-```bash
-# Example: Add VS Code preferences
-mkdir -p ~/code/lancehunt/dotfiles/vscode/Preferences
-cp ~/Library/Preferences/com.microsoft.VSCode.plist ~/code/lancehunt/dotfiles/vscode/Preferences/
-cd ~/code/lancehunt/dotfiles
-git add vscode
+git add apps/vscode
 git commit -m "Add VS Code preferences"
+
+# Example 2: Add app with .config directory (like neovim)
+cp -r ~/.config/nvim ~/code/lancehunt/dotfiles/apps/nvim
+cd ~/code/lancehunt/dotfiles
+git add apps/nvim
+git commit -m "Add neovim config"
 ```
 
 ### Testing Changes
