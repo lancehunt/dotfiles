@@ -179,3 +179,8 @@ xpand() {
 genrand() {
   openssl rand -base64 128 |shasum -a 256|head -c36
 }
+
+
+tabname() {
+    echo -ne "\033]0;${1}\007"
+}
