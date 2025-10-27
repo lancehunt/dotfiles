@@ -2,26 +2,26 @@
 if command -v aws &>/dev/null; then
   # AWS CLI with Localstack
   alias awsl='aws --endpoint-url=http://localhost:4566'
-  
+
   # AWS SSO login
   alias awssso='aws --profile $(sed -n "s/\[profile \(.*\)\]/\1/gp" ~/.aws/config | head -n 1) sso login'
 
   # Show all AWS related environment variables
   alias awsenv='env | grep AWS_ | sed -n "s/^\(.*\)=\(.*\)$/\x1b[34m\1\x1b[0m=\x1b[32m\2\x1b[0m/gp" && echo "Caller identity:" && aws sts get-caller-identity | jq'
-  
+
   # Clear AWS related environment variables
   #alias awsunset='unset $(compgen -v AWS)'
   alias awsunset='unset `env | grep AWS_ | cut -d'=' -f1 | grep -v "AWS_VAULT_"`'
 
   # Add copied AWS credentials to config file
   alias awspaste='echo \ >> ~/.aws/credentials && echo \ >> ~/.aws/credentials && pbpaste >> ~/.aws/credentials && cat ~/.aws/credentials'
-  
+
   # Get credential by name
   alias awscreds='cat ~/.aws/credentials | grep \\[ | sed s/\\[// | sed s/\\]//'
 
   # Quickly get currently used AWS AccountId
   alias awsaccount='aws sts get-caller-identity --query "Account" --output text'
-  
+
   # Get EC2 instance by Name
   awsec2byname() {
      aws ec2 describe-instances --filters "Name=private-dns-name,Values=$1"
@@ -29,4 +29,3 @@ if command -v aws &>/dev/null; then
 
 
 fi
-
