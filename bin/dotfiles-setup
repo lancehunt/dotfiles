@@ -16,8 +16,15 @@ if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
     exit 0
 fi
 
-# Navigate to repo root (parent of bin/)
-REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# Navigate to repo root (handle symlinks correctly)
+if [[ -L "$0" ]]; then
+    # Follow symlink to get actual script location
+    SCRIPT_PATH="$(readlink "$0")"
+else
+    SCRIPT_PATH="$0"
+fi
+SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$REPO_ROOT"
 
 # Create symlinks in ~/.local/bin for easy access
