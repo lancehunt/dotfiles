@@ -94,6 +94,52 @@ fi
 echo "   Synced: $synced | Skipped: $skipped"
 
 # ============================================================================
+# Auto-fix common issues (trailing whitespace, newlines)
+# ============================================================================
+
+echo "\n🔧 Auto-fixing formatting issues..."
+
+# Fix formatting issues using Python (mimics pre-commit hooks exactly)
+python3 << 'PYTHON_EOF'
+import os
+import re
+from pathlib import Path
+
+def fix_file(filepath):
+    """Fix trailing whitespace and ensure exactly one newline at EOF"""
+    try:
+        with open(filepath, 'rb') as f:
+            original = f.read()
+
+        # Decode to text
+        try:
+            content = original.decode('utf-8')
+        except UnicodeDecodeError:
+            return  # Skip binary files
+
+        # Fix trailing whitespace on each line
+        lines = content.splitlines(keepends=True)
+        fixed_lines = [line.rstrip() + ('\n' if line.endswith(('\n', '\r\n', '\r')) else '')
+                      for line in lines]
+
+        # Join and ensure exactly one newline at end
+        fixed = ''.join(fixed_lines).rstrip() + '\n'
+
+        # Write back if changed
+        if fixed.encode('utf-8') != original:
+            with open(filepath, 'wb') as f:
+                f.write(fixed.encode('utf-8'))
+    except Exception:
+        pass  # Skip files that can't be processed
+
+# Find and fix all text files
+for pattern in ['dotfiles/.*', 'apps/**/*.toml', 'apps/**/*.json', 'apps/**/*.yml', 'apps/**/*.yaml', 'apps/**/*.conf']:
+    for filepath in Path('.').glob(pattern):
+        if filepath.is_file() and filepath.name != '.DS_Store' and not filepath.name.endswith('.plist'):
+            fix_file(filepath)
+PYTHON_EOF
+
+# ============================================================================
 # Summary
 # ============================================================================
 
