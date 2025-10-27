@@ -35,7 +35,7 @@ export CLICOLOR=1
 export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 
 ##############################################################################
-# Shell command Replacements 
+# Shell command Replacements
 ##############################################################################
 
 if command -v zoxide &>/dev/null; then
@@ -113,12 +113,15 @@ export NVM_DIR="$HOME/.nvm"
   [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
   [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
-  
+
 
 ##############################################################################
 # Python
 ##############################################################################
 export PYENV_ROOT="$HOME/.pyenv"
+
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
 
 if command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"; then
   eval "$(pyenv init -)"
@@ -137,6 +140,12 @@ fi
 ##############################################################################
 ulimit -n 2048
 
+plugins=(
+  git
+  ruby
+  zsh-aws-vault
+)
+
 ##############################################################################
 # Source other Files
 ##############################################################################
@@ -150,3 +159,41 @@ ulimit -n 2048
 
 [[ -f ~/.local-profile ]] && source ~/.local-profile
 
+eval $(thefuck --alias)
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/lhunt/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/lhunt/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/lhunt/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/lhunt/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+eval "$(~/.local/bin/mise activate zsh)"
+
+# docker
+export RANCHER_HOME="$HOME/.rd/bin"
+
+case ":$PATH:" in
+  *":$RANCHER_HOME:"*) ;;
+  *) export PATH="$RANCHER_HOME:$PATH" ;;
+esac
+# docker end
+
+
+# pnpm
+export PNPM_HOME="/Users/lhunt/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+. "$HOME/.local/share/../bin/env"

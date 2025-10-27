@@ -141,11 +141,14 @@ alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resource
 # Reload the shell (i.e. invoke as a login shell)
 alias reload="exec $SHELL -l"
 
-# Colorize via pygments
-dog() { 
+dog() {
   cat $1
 }
 alias cat="bat"
+alias more="moar"
+alias less="moar"
+alias lesss="less"
+
 alias ll='ls -lG'
 alias lll='ls -lGhA'
 alias rdns='dig +noall +answer -x'
@@ -164,8 +167,8 @@ gitp() {
 # Misc developer tooling
 alias swagger="docker run --rm -it -e GOPATH=$HOME/go:/go -v $HOME:$HOME -w $(pwd) quay.io/goswagger/swagger"
 alias minikube="minikube start --vm-driver hyperkit"
-function __versionator { 
-	exiftool "$1" | grep -i Version 
+function __versionator {
+	exiftool "$1" | grep -i Version
 }
 alias assversion='__versionator'
 alias lsversion='for f in "$1"; do echo $f; exiftool $f | grep -e "Assembly Version"; done'
@@ -177,4 +180,7 @@ genrand() {
   openssl rand -base64 128 |shasum -a 256|head -c36
 }
 
-
+# Dotfiles management
+alias dotfiles-sync='~/code/lancehunt/dotfiles/bin/sync.sh'
+alias dotfiles-commit='cd ~/code/lancehunt/dotfiles && git add . && git commit && git push && cd -'
+alias dotfiles-update='dotfiles-sync && dotfiles-commit'

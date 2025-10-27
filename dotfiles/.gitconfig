@@ -29,7 +29,7 @@ up = "!git remote update -p; git merge --ff-only @{u}"
 
 	# Show verbose output about tags, branches or remotes
 	tags = tag -l
-	branches = branch -a
+	branches = branch -a --sort=-committerdate
 	remotes = remote -v
 
 	# Amend the currently staged files to the latest commit
@@ -184,3 +184,7 @@ up = "!git remote update -p; git merge --ff-only @{u}"
 	keepBackup = false
 [init]
 	templateDir = ~/.git-templates/git-secrets
+	defaultBranch = main
+[user]
+	name = Lance Hunt
+	email = lhunt@finetunelearning.com
