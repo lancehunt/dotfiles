@@ -134,6 +134,21 @@ dotfiles-commit
 dotfiles-update
 ```
 
+### Restore from Repository (Safe)
+```bash
+# Restore configs from repo to your system (with safety checks!)
+dotfiles-restore
+
+# The script will:
+# 1. Check for unsync'd local changes
+# 2. Warn if files differ
+# 3. Offer options: abort, backup, or continue
+```
+
+**⚠️ Important**: Never use `bin/setup.sh` on an existing system!
+- `bin/setup.sh` - Fresh installs only (overwrites everything)
+- `dotfiles-restore` - Safe restore with diff checking
+
 ### Automated Daily Sync (Optional)
 To enable automatic daily sync at 6 PM:
 ```bash

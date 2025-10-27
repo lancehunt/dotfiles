@@ -1,0 +1,111 @@
+#!/usr/bin/env zsh
+# Restore dotfiles from repository to home directory
+# USE WITH CAUTION: This will overwrite local files!
+
+echo "⚠️  DOTFILES RESTORE"
+echo "   This will copy configs FROM the repo TO your system."
+echo ""
+
+# Navigate to repo root (parent of bin/)
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$REPO_ROOT"
+
+# Check for unsync'd local changes
+echo "🔍 Checking for unsync'd local changes..."
+unsync_count=0
+
+check_file() {
+    local repo_file="$1"
+    local home_file="$2"
+
+    if [[ -f "$home_file" && -f "$repo_file" ]]; then
+        if ! diff -q "$repo_file" "$home_file" >/dev/null 2>&1; then
+            echo "   ⚠️  $home_file differs from repo"
+            ((unsync_count++))
+        fi
+    fi
+}
+
+# Check dotfiles
+for repo_file in dotfiles/.*; do
+    [[ "$repo_file" == "dotfiles/." || "$repo_file" == "dotfiles/.." ]] && continue
+    filename="${repo_file#dotfiles/}"
+    check_file "$repo_file" "$HOME/$filename"
+done
+
+# Check app preferences
+if [[ -d "apps" ]]; then
+    for plist_file in apps/*/Preferences/*.plist; do
+        [[ ! -f "$plist_file" ]] && continue
+        filename="${plist_file##*/}"
+        check_file "$plist_file" "$HOME/Library/Preferences/$filename"
+    done
+fi
+
+# Warn if unsync'd changes found
+if [[ $unsync_count -gt 0 ]]; then
+    echo ""
+    echo "⚠️  WARNING: Found $unsync_count file(s) with unsync'd local changes!"
+    echo "   These will be OVERWRITTEN if you continue."
+    echo ""
+    echo "Options:"
+    echo "   1. Abort and run 'dotfiles-sync' first to save your changes"
+    echo "   2. Continue anyway (local changes will be lost)"
+    echo "   3. Create backup before overwriting"
+    echo ""
+    read "choice?Enter choice (1/2/3): "
+
+    case "$choice" in
+        1)
+            echo "Aborted. Run 'dotfiles-sync' to save your local changes first."
+            exit 1
+            ;;
+        2)
+            echo "Continuing without backup..."
+            ;;
+        3)
+            backup_dir="$HOME/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
+            mkdir -p "$backup_dir"
+            echo "Creating backup in $backup_dir..."
+
+            # Backup dotfiles
+            for repo_file in dotfiles/.*; do
+                [[ "$repo_file" == "dotfiles/." || "$repo_file" == "dotfiles/.." ]] && continue
+                filename="${repo_file#dotfiles/}"
+                [[ -f "$HOME/$filename" ]] && cp "$HOME/$filename" "$backup_dir/" 2>/dev/null || true
+            done
+
+            echo "Backup created. Continuing with restore..."
+            ;;
+        *)
+            echo "Invalid choice. Aborted."
+            exit 1
+            ;;
+    esac
+fi
+
+# Restore dotfiles
+echo "\n📄 Restoring dotfiles..."
+cp dotfiles/.* ~/ 2>/dev/null || true
+
+# Restore application configs
+echo "\n⚙️  Restoring application configs..."
+if [[ -d "apps" ]]; then
+    for app_dir in apps/*/; do
+        [[ ! -d "$app_dir" ]] && continue
+
+        app_name="${app_dir#apps/}"
+        app_name="${app_name%/}"
+
+        if [[ -d "$app_dir/Preferences" ]]; then
+            echo "   - $app_name preferences"
+            cp -r "$app_dir/Preferences/." ~/Library/Preferences/ 2>/dev/null || true
+        else
+            echo "   - $app_name config"
+            mkdir -p ~/.config
+            cp -r "$app_dir" ~/.config/ 2>/dev/null || true
+        fi
+    done
+fi
+
+echo "\n✅ Restore complete! Restart applications to apply changes."

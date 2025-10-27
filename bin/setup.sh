@@ -1,7 +1,20 @@
 #!/usr/bin/env zsh
 # Initial setup script for dotfiles repository
+# ⚠️  FOR FRESH INSTALLS ONLY - Will overwrite existing configs!
+# ⚠️  If you already have configs, use 'dotfiles-restore' instead for safety checks.
 
 echo "🚀 Setting up development environment..."
+echo ""
+echo "⚠️  WARNING: This script will OVERWRITE existing configuration files!"
+echo "   - Use this for fresh installations only"
+echo "   - For existing setups, use 'dotfiles-restore' which has safety checks"
+echo ""
+read "confirm?Continue with fresh install? (y/N): "
+
+if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
+    echo "Aborted."
+    exit 0
+fi
 
 # Navigate to repo root (parent of bin/)
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
