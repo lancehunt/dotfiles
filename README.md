@@ -22,15 +22,13 @@ dotfiles-restore   # Restore from repo (safe, checks for local changes)
 cp ~/.bashrc dotfiles/.bashrc
 ```
 
-### App Configs (from ~/.config)
+### App Configs (Easy Way)
 ```bash
-cp -r ~/.config/nvim apps/nvim
-```
+# Add a .plist preference file
+dotfiles-add-app ~/Library/Preferences/com.microsoft.VSCode.plist vscode
 
-### App Preferences (plists from ~/Library/Preferences)
-```bash
-mkdir -p apps/vscode/Preferences
-cp ~/Library/Preferences/com.microsoft.VSCode.plist apps/vscode/Preferences/
+# Add a config directory
+dotfiles-add-app ~/.config/nvim nvim
 ```
 
 After adding files once, `dotfiles-sync` automatically keeps them in sync.
@@ -50,6 +48,7 @@ bin/          # Scripts
 
 - `dotfiles-sync` - Copy local → repo, auto-fix formatting
 - `dotfiles-restore` - Copy repo → local (checks for unsync'd changes)
+- `dotfiles-add-app` - Add app config to repo (smart detection)
 - `dotfiles-setup` - Fresh install (Homebrew, packages, configs)
 
 ## Safety

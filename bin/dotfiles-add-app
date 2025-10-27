@@ -1,0 +1,74 @@
+#!/usr/bin/env zsh
+# Add an application config to the dotfiles repository
+
+# Navigate to repo root
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$REPO_ROOT"
+
+# Usage
+if [[ $# -lt 2 ]]; then
+    cat << 'EOF'
+Usage: dotfiles-add-app <source> <app-name>
+
+Add an application config to the dotfiles repository.
+
+Examples:
+  # Add a .plist preference file
+  dotfiles-add-app ~/Library/Preferences/com.googlecode.iterm2.plist iterm2
+
+  # Add a config directory
+  dotfiles-add-app ~/.config/starship starship
+
+The script will:
+  - Create apps/<app-name>/ or apps/<app-name>/Preferences/
+  - Copy the source file/directory
+  - Report what was added
+
+After adding, run 'dotfiles-sync' to keep it in sync automatically.
+EOF
+    exit 1
+fi
+
+SOURCE="$1"
+APP_NAME="$2"
+
+# Expand ~ in source path
+SOURCE="${SOURCE/#\~/$HOME}"
+
+# Check if source exists
+if [[ ! -e "$SOURCE" ]]; then
+    echo "❌ Error: Source not found: $SOURCE"
+    exit 1
+fi
+
+# Determine destination based on source type
+if [[ -f "$SOURCE" && "$SOURCE" == *.plist ]]; then
+    # It's a .plist file - goes in Preferences/
+    DEST_DIR="apps/$APP_NAME/Preferences"
+    FILENAME="$(basename "$SOURCE")"
+    mkdir -p "$DEST_DIR"
+    cp "$SOURCE" "$DEST_DIR/"
+    echo "✅ Added: $DEST_DIR/$FILENAME"
+    echo "   Type: Preference file (will sync from ~/Library/Preferences/)"
+
+elif [[ -d "$SOURCE" ]]; then
+    # It's a directory - goes directly in apps/
+    DEST_DIR="apps/$APP_NAME"
+    mkdir -p "$DEST_DIR"
+    cp -r "$SOURCE/." "$DEST_DIR/"
+    echo "✅ Added: $DEST_DIR/"
+    echo "   Type: Config directory (will sync from ~/.config/$APP_NAME/)"
+
+else
+    echo "❌ Error: Source must be either:"
+    echo "   - A .plist file (for app preferences)"
+    echo "   - A directory (for config files)"
+    exit 1
+fi
+
+echo ""
+echo "Next steps:"
+echo "  1. Review: git status"
+echo "  2. Commit: git add apps/$APP_NAME && git commit -m \"Add $APP_NAME config\""
+echo "  3. From now on, 'dotfiles-sync' will keep it updated automatically"
