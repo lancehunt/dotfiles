@@ -1,0 +1,54 @@
+{
+    "editor.inlineSuggest.enabled": true,
+    "git.openRepositoryInParentFolders": "never",
+    "workbench.colorTheme": "Default Dark+",
+    "window.zoomLevel": 2,
+    "github.copilot.enable": {
+        "*": true,
+        "plaintext": false,
+        "markdown": true,
+        "scminput": false
+    },
+    "github.copilot.preferredAccount": "lhunt2",
+    "makefile.configureOnOpen": false,
+    "explorer.confirmDelete": false,
+    "geminicodeassist.project": "",
+    "vxplain.enableAnalytics": false,
+    "vxplain.enableExtensionAutoStart": false,
+    "geminicodeassist.customCommands": {
+        "revise-text": "revise the text file to apply the requested changes while staying faithful overall to the original text unless explicitly told otherwise"
+    },
+    "editor.renderWhitespace": "all",
+    "git.autofetch": true,
+    "vxplain.enableAiFeatures": false,
+    "explorer.confirmDragAndDrop": false,
+    "python.defaultInterpreterPath": "/opt/homebrew/bin/python3",
+    "aws.telemetry": false,
+    "claudeCode.environmentVariables": [
+        {
+            "name": "CLAUDE_CODE_USE_BEDROCK",
+            "value": "1"
+        },
+        {
+            "name": "AWS_REGION",
+            "value": "us-east-1"
+        },
+        {
+            "name": "AWS_PROFILE",
+            "value": "claude"
+        },
+        {
+            "name": "ANTHROPIC_MODEL",
+            "value": "global.anthropic.claude-sonnet-4-5-20250929-v1:0"
+        },
+        {
+            "name": "CLAUDE_CODE_MAX_OUTPUT_TOKENS",
+            "value": "8192"
+        },
+        {
+            "name": "MAX_THINKING_TOKENS",
+            "value": "1024"
+        }
+    ],
+    "typescript.tsserver.watchOptions": "vscode"
+}
